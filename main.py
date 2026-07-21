@@ -42,6 +42,28 @@ task_list = tk.Listbox(
     height = 10,
     font = ("Arial", 12)
 )
-task_list.pack()
+task_list.pack(pady=20)
+
+complete_button = tk.Button(
+    root,
+    text = "Complete task",
+    width = 15
+)
+complete_button.pack()
+
+delete_button = tk.Button(
+    root,
+    text = "Delete task",
+    width = 15
+)
+delete_button.pack()
+
+progress_label = tk.Label(
+    root,
+    text = "Completed: 0/0 | Progress: 0%",
+    font=("Arial", 12),
+    bg="white"
+)
+progress_label.pack(pady=15)
 
 root.mainloop()
