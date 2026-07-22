@@ -39,11 +39,16 @@ task_entry.pack(pady=15)
 
 def add_task():
 
-    task = task_entry.get()
+    task = task_entry.get().strip()
 
-    task_list.insert(tk.END, task)
+    if task:
 
-    task_entry.delete(0, tk.END)
+        task_list.insert(tk.END, task)
+
+        task_entry.delete(0, tk.END)
+
+        save_tasks()
+        update_progress()
 
 def complete_task():
 
@@ -64,14 +69,77 @@ def complete_task():
                 "✔ " + task
             )
 
+            save_tasks()
+            update_progress()
+
 def delete_task():
 
     selected_task = task_list.curselection()
 
     if selected_task:
 
-        task_list.delete(selected_task)
+        task_list.delete(selected_task[0])
 
+        save_tasks()
+        update_progress()
+
+def save_tasks():
+
+    tasks = task_list.get(0, tk.END)
+
+    with open(file_name, "w") as file:
+
+        json.dump(
+
+            list(tasks),
+
+            file,
+
+            indent=4
+
+        )
+
+def load_tasks():
+
+    try:
+
+        with open(file_name, "r") as file:
+
+            tasks = json.load(file)
+
+            for task in tasks:
+
+                task_list.insert(tk.END, task)
+
+    except:
+
+        pass
+
+def update_progress():
+
+    tasks = task_list.get(0, tk.END)
+
+    total = len(tasks)
+
+    completed = 0
+
+    for task in tasks:
+
+        if task.startswith("✔"):
+
+            completed += 1
+
+    if total > 0:
+
+        progress = int((completed / total) * 100)
+
+    else:
+
+        progress = 0
+
+    progress_label.config(
+        text=f"Completed: {completed}/{total} | Progress: {progress}%"
+    )
 
 # Add Task button
 add_button = tk.Button(
@@ -117,6 +185,7 @@ progress_label = tk.Label(
     bg="white"
 )
 progress_label.pack(pady=15)
-
+load_tasks()
+update_progress()
 
 root.mainloop()
