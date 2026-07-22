@@ -1,4 +1,5 @@
 import tkinter as tk
+import json
 from datetime import datetime
 
 root = tk.Tk()
@@ -6,6 +7,10 @@ root.title("Personal task Tracker")
 root.geometry("700x550")
 root.configure(bg="white")
 
+file_name = "tasks.json"
+
+
+# Title
 title_label = tk.Label(
     root,
     text = "Personal Task Tracker",
@@ -14,6 +19,7 @@ title_label = tk.Label(
 )
 title_label.pack(pady=20)
 
+# Date
 date_label = tk.Label(
     root,
     text = datetime.now().strftime("%d-%m-%Y"),
@@ -22,6 +28,7 @@ date_label = tk.Label(
 )
 date_label.pack()
 
+# Task Entry
 task_entry = tk.Entry(
     root,
     width = 40,
@@ -29,13 +36,53 @@ task_entry = tk.Entry(
 )
 task_entry.pack(pady=15)
 
+
+def add_task():
+
+    task = task_entry.get()
+
+    task_list.insert(tk.END, task)
+
+    task_entry.delete(0, tk.END)
+
+def complete_task():
+
+    selected_task = task_list.curselection()
+
+    if selected_task:
+
+        index = selected_task[0]
+
+        task = task_list.get(index)
+
+        if not task.startswith("✔"):
+
+            task_list.delete(index)
+
+            task_list.insert(
+                index,
+                "✔ " + task
+            )
+
+def delete_task():
+
+    selected_task = task_list.curselection()
+
+    if selected_task:
+
+        task_list.delete(selected_task)
+
+
+# Add Task button
 add_button = tk.Button(
     root,
     text = "Add task",
-    width = 15
+    width = 15,
+    command = add_task
 )
 add_button.pack()
 
+# Task List
 task_list = tk.Listbox(
     root,
     width = 50,
@@ -44,20 +91,25 @@ task_list = tk.Listbox(
 )
 task_list.pack(pady=20)
 
+# Task Complete button
 complete_button = tk.Button(
     root,
     text = "Complete task",
-    width = 15
+    width = 15,
+    command = complete_task
 )
 complete_button.pack()
 
+# Delete task button
 delete_button = tk.Button(
     root,
     text = "Delete task",
-    width = 15
+    width = 15,
+    command = delete_task
 )
 delete_button.pack()
 
+# Progress label %
 progress_label = tk.Label(
     root,
     text = "Completed: 0/0 | Progress: 0%",
@@ -65,5 +117,6 @@ progress_label = tk.Label(
     bg="white"
 )
 progress_label.pack(pady=15)
+
 
 root.mainloop()
